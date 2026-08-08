@@ -35,7 +35,11 @@ Use the stable package, not the development package.
 7. Install **esp32 by Espressif Systems**. Choose the current stable version shown by Boards Manager; do not choose a development or `dev` package.
 8. Wait until the button/status says `Installed`, then restart Arduino IDE once.
 
-If the official package URL repeatedly fails to download from mainland China, report the exact error first. Espressif also publishes an official China mirror, but do not mix the two package indexes during initial diagnosis.
+   If the official package URL fails to download from mainland China, use Espressif's official stable China mirror instead:
+
+   `https://jihulab.com/esp-mirror/espressif/arduino-esp32/-/raw/gh-pages/package_esp32_index_cn.json`
+
+   Remove the global ESP32 URL before adding the China mirror so Boards Manager does not select a global package version. Select the newest stable version with the `-cn` suffix. The China mirror must be updated manually because automatic updates target the global package.
 
 ## Select the board and port
 
@@ -97,4 +101,3 @@ Stage 0 and Stage 1 pass only when all of these are true:
 - Serial Monitor at 115200 shows the boot message and an increasing counter once per second.
 
 Do not connect the MPU6050 until these results are confirmed.
-

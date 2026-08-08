@@ -12,11 +12,13 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 
 | Stage | Scope | Status |
 |---|---|---|
-| 0 | Arduino IDE and ESP32 board support | Waiting for hardware verification |
-| 1 | Compile, upload, and serial output | Waiting for hardware verification |
+| 0 | Arduino IDE and ESP32 board support | Passed on hardware (2026-08-08) |
+| 1 | Compile, upload, and serial output | Passed on hardware (2026-08-08) |
 | 2-13 | WiFi through enclosure integration | Not started |
 
 Progress only advances after the current stage is verified on the real hardware.
+
+See [docs/verification-log.md](docs/verification-log.md) for the exact tool versions and captured Stage 0/1 results.
 
 ## Stage 0/1 quick start
 
@@ -45,4 +47,3 @@ docs/
 - Active buzzer module (later stage)
 - Two LM393 light sensor modules (later stage)
 - Optional SSD1306 OLED (later stage)
-
