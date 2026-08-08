@@ -52,3 +52,15 @@ counter: 6
 ### Conclusion
 
 Stage 0 and Stage 1 pass. Do not connect the MPU6050 until Stage 2 WiFi work is explicitly started.
+
+### Arduino IDE startup correction
+
+On 2026-08-09, the IDE was observed remaining on its startup logo. Captured startup logs showed that its local gRPC connection to `arduino-cli daemon` was reset. The Windows user had `HTTP_PROXY` and `HTTPS_PROXY` pointing to `127.0.0.1:10811`, but no localhost proxy bypass.
+
+The user-level environment was corrected with:
+
+```text
+NO_PROXY=127.0.0.1,localhost
+```
+
+After a clean restart, the IDE reached the `ready` application state, opened `stage_01_serial_test`, and detected COM6. The existing external proxy settings were retained.

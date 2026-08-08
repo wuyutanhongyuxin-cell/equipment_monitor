@@ -42,3 +42,34 @@ Set Serial Monitor to `115200`. The sketch and monitor must use the same baud ra
 
 This is not a COM-port or BOOT problem. Copy the first error and the final error from the output panel. Common causes are an incomplete `esp32 by Espressif Systems` installation, the wrong sketch file, or a damaged package download.
 
+## Arduino IDE remains on the startup logo
+
+Capture the IDE startup log before deleting caches or reinstalling. A confirmed cause on the verified Windows computer was a user-level HTTP proxy without a localhost bypass:
+
+```text
+HTTP_PROXY=http://127.0.0.1:10811
+HTTPS_PROXY=http://127.0.0.1:10811
+NO_PROXY was not set
+```
+
+The IDE starts `arduino-cli daemon` on `127.0.0.1` and communicates with it over gRPC. Sending that local connection through the HTTP proxy caused this log error and left the loading logo visible:
+
+```text
+14 UNAVAILABLE: No connection established
+read ECONNRESET
+```
+
+Keep the external proxy and add this Windows user environment variable:
+
+```text
+NO_PROXY=127.0.0.1,localhost
+```
+
+Then close the entire stuck Arduino IDE process tree and start it again. A successful startup log reaches:
+
+```text
+Replace loading indicator with ready workbench UI
+Changed application state from 'initialized_layout' to 'ready'
+```
+
+Do not apply this fix merely because a splash screen is slow. Confirm the proxy variables and `ECONNRESET` log signature first.
