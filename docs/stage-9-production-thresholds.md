@@ -16,6 +16,12 @@ The input must contain Stage 6-style labeled `data` lines. `STILL`/`STOP` normal
 
 The analyzer reports sample counts, ranges, means, empirical 95th/5th percentiles, overlap, and a midpoint only when the observed full ranges are separated. It defaults to requiring 60 windows per class.
 
+Run the device-independent regression suite with:
+
+```powershell
+.\tests\test_threshold_analyzer.ps1
+```
+
 ## Pass criteria
 
 - Stage 8 data requirements are met.
@@ -25,4 +31,4 @@ The analyzer reports sample counts, ranges, means, empirical 95th/5th percentile
 
 ## Current status
 
-Analyzer implemented and locally fixture-tested. Production calibration is blocked on Stage 8 data and acceptance limits from the machine owner.
+Software complete: the analyzer and repeatable separated/overlap/insufficient-data regressions pass. Production calibration remains blocked on Stage 8 data and acceptance limits from the machine owner.

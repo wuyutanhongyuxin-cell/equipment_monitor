@@ -21,11 +21,11 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 | 6 | Labeled threshold dataset collection | Passed on hardware (2026-08-09) |
 | 7 | Hysteretic RUN/STOP state classifier | Passed on hardware (2026-08-10) |
 | 8 | Mounted machine dataset | Waiting for supervised machine access |
-| 9 | Production threshold calibration | Analyzer ready; waiting for Stage 8 data |
-| 10 | WiFi telemetry integration | Waiting for endpoint/protocol decision |
-| 11 | Phone alerts | Waiting for provider and alert policy |
-| 12 | Local interface and auxiliary sensors | Waiting for exact module inspection |
-| 13 | Enclosure and soak validation | Waiting for Stages 8-12 and installation |
+| 9 | Production threshold calibration | Software complete; waiting for Stage 8 data |
+| 10 | WiFi telemetry integration | Offline bench passed; connected HTTP pending |
+| 11 | Phone alerts | Core policy complete; waiting for provider/recipient |
+| 12 | Local interface and auxiliary sensors | Policy complete; waiting for module inspection |
+| 13 | Enclosure and soak validation | Analyzer complete; waiting for hardware soak |
 
 Progress only advances after the current stage is verified on the real hardware.
 
@@ -60,6 +60,9 @@ firmware/
     stage_06_threshold_dataset.ino
   stage_07_state_classifier/
     stage_07_state_classifier.ino
+  stage_10_wifi_telemetry/
+    secrets.example.h
+    stage_10_wifi_telemetry.ino
 docs/
   stage-0-1.md
   stage-2-wifi.md
@@ -77,6 +80,7 @@ docs/
   troubleshooting.md
 tools/
   analyze_threshold_dataset.ps1
+  analyze_soak_log.ps1
 ```
 
 ## Planned hardware

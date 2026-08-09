@@ -1,5 +1,13 @@
 #include <Wire.h>
 
+#ifndef MONITOR_EXTRA_SETUP
+#define MONITOR_EXTRA_SETUP() do {} while (0)
+#endif
+
+#ifndef MONITOR_STATE_UPDATED
+#define MONITOR_STATE_UPDATED(stateValue, rmsValue, peakValue, failedValue, missedValue) do {} while (0)
+#endif
+
 constexpr uint8_t SENSOR_ADDRESS = 0x68;
 constexpr uint8_t REG_SMPLRT_DIV = 0x19;
 constexpr uint8_t REG_CONFIG = 0x1A;
@@ -173,6 +181,8 @@ void classifyWindow(float rmsG) {
   Serial.printf("state=%s,rms=%.5f,peak=%.5f,evidence=%s,confirm=%u/%u,valid=%lu/%lu,failed=%lu,missed=%lu\n",
                 stateName(state), rmsG, windowPeakG, evidence, evidenceCount,
                 CONFIRM_WINDOWS, windowValid, windowAttempts, windowFailures, windowMissed);
+  MONITOR_STATE_UPDATED(stateName(state), rmsG, windowPeakG,
+                        windowFailures, windowMissed);
 }
 
 void resetClassifier() {
@@ -236,6 +246,7 @@ void setup() {
   initializeSensor();
   runClassifierSelfTest();
   calibrateGravity();
+  MONITOR_EXTRA_SETUP();
   Serial.printf("Classifier: run_enter=%.3fg, stop_enter=%.3fg, confirm_windows=%u\n",
                 RUN_ENTER_RMS_G, STOP_ENTER_RMS_G, CONFIRM_WINDOWS);
   nextSampleUs = micros() + SAMPLE_INTERVAL_US;

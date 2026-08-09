@@ -1,0 +1,3 @@
+state=STOP,rms=0.00440,peak=0.01000,evidence=STOP,confirm=2/2,valid=200/200,failed=0,missed=0
+state=STOP,rms=0.00460,peak=0.01100,evidence=STOP,confirm=2/2,valid=200/200,failed=0,missed=0
+state=RUN,rms=0.30000,peak=0.70000,evidence=RUN,confirm=2/2,valid=200/200,failed=0,missed=0

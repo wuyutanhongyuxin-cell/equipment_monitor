@@ -394,3 +394,53 @@ The remaining stages were reviewed and scoped without claiming hardware completi
 - Stage 13: enclosure and soak validation; blocked on prior stages, enclosure, and supervised installation.
 
 No external notification account, network endpoint, machine connection, or speculative hardware wiring was created during this preparation.
+
+## Device-independent and no-factory-equipment work
+
+Completed on 2026-08-10 after Stage 7 hardware validation.
+
+### Stage 9 software
+
+The production-threshold analyzer now has a repeatable PowerShell regression suite. It verifies separated ranges and their midpoint, rejects overlapping ranges without producing a threshold, and rejects datasets below the required per-class window count.
+
+```text
+Stage 9 threshold analyzer tests: PASS
+```
+
+Stage 9 software is complete, but production thresholds remain blocked on supervised Stage 8 mounted-machine data.
+
+### Stage 10 bench telemetry
+
+A local read-only HTTP `/status` implementation was added. It reuses the Stage 7 classifier through optional hooks, while WiFi connection and HTTP clients run in a FreeRTOS task pinned to core 0. The response explicitly reports `threshold_source=bench_stage6` and `production_ready=false`.
+
+The firmware compiled and uploaded through `COM6`. With the saved 2.4 GHz hotspot unavailable, repeated reconnect attempts ran while more than 30 consecutive sensor windows remained 200/200 with zero failures and zero missed periods at 199.63 Hz. This verifies the disconnected/non-blocking path. Connected `/status` content and reconnect recovery remain pending until a 2.4 GHz network is available.
+
+### Stage 11 software core
+
+The provider-independent fixed-capacity alert policy implements silent initial state, duplicate-state suppression, boot ID plus monotonic sequence, head-matching delivery acknowledgement, minimum send interval, offline queueing, oldest-event overflow, and an observable dropped-event counter.
+
+```text
+Stage 11 alert policy tests: PASS
+```
+
+Real phone delivery remains pending because no provider, recipient, credentials, or alert policy has been authorized.
+
+### Stage 12 software policy
+
+The hardware-independent local output policy maps UNKNOWN, STOP, RUN, sensor fault, offline fault, and mute to abstract LED/buzzer patterns. Faults override state; mute suppresses only sound and never hides visual fault status.
+
+```text
+Stage 12 local indicator policy tests: PASS
+```
+
+GPIO binding and powered tests remain pending exact module inspection.
+
+### Stage 13 software analyzer
+
+The soak analyzer checks minimum complete-window count, incomplete windows, failed samples, missed periods, state counts, and RMS range. Its production default requires 86,400 complete one-second windows.
+
+```text
+Stage 13 soak analyzer tests: PASS
+```
+
+The physical 24-hour soak and mounted validation remain pending the enclosure and completed upstream stages.

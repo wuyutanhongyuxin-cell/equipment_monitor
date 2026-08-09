@@ -1,0 +1,13 @@
+$ErrorActionPreference = 'Stop'
+$repoRoot = Split-Path -Parent $PSScriptRoot
+$source = Join-Path $PSScriptRoot 'test_alert_policy.cpp'
+$output = Join-Path $env:TEMP 'equipment_monitor_alert_policy_test.exe'
+
+try {
+    & g++ -std=c++17 -Wall -Wextra -Werror -I $repoRoot $source -o $output
+    if ($LASTEXITCODE -ne 0) { throw "g++ failed with exit code $LASTEXITCODE" }
+    & $output
+    if ($LASTEXITCODE -ne 0) { throw "alert policy test failed with exit code $LASTEXITCODE" }
+} finally {
+    Remove-Item -LiteralPath $output -Force -ErrorAction SilentlyContinue
+}
