@@ -338,3 +338,49 @@ The stationary and vibration RMS ranges are completely separated. The candidate 
 ### Final conclusion
 
 Stage 6 passes. The labeled acquisition and overlap-rejection workflow is verified, and deliberate bench movement is separable from stationary noise in this dataset. The `0.11896g` value is a bench-test candidate only; it must not be treated as a real equipment RUN/STOP threshold until the sensor is mounted in its intended location and actual machine-state datasets are collected.
+
+## Stage 7
+
+Started on 2026-08-09. The classifier uses bench-only thresholds of 0.120g to enter RUN and 0.060g to enter STOP, with two consecutive valid one-second windows required for either transition.
+
+### Timing defect and correction
+
+The first hardware run alternated between a valid 200-sample window and an invalid 199-sample window. Sensor reads themselves had zero failures. Diagnosis showed that two serial log lines blocked longer than one 5 ms sample period, while the next window retained a timestamp captured before logging.
+
+The firmware now emits shorter logs and realigns the next sample deadline only after logging completes. A temporary 230400-baud test removed missed windows but produced unreliable CH340 text, so the final firmware returned to 115200 baud while retaining post-log realignment. The final stationary capture contained consecutive 200/200 windows with zero failures and zero missed periods at 199.63 Hz.
+
+### Automatic and stationary result
+
+The startup synthetic self-test verified all classifier rules and reported `PASS`:
+
+- two low windows: `UNKNOWN -> STOP`
+- one high window: remain `STOP`
+- hysteresis-band window: remain `STOP` and clear pending evidence
+- two high windows: `STOP -> RUN`
+- one low window: remain `RUN`
+- two low windows: `RUN -> STOP`
+
+After self-test reset and real sensor calibration, stationary hardware data produced:
+
+```text
+state=UNKNOWN,rms=0.00440,peak=0.01081,evidence=STOP,confirm=1/2,valid=200/200,failed=0,missed=0
+transition: from=UNKNOWN,to=STOP,rms_g=0.00432
+state=STOP,rms=0.00432,peak=0.00924,evidence=STOP,confirm=2/2,valid=200/200,failed=0,missed=0
+```
+
+### Current conclusion
+
+Stage 7 is partially verified. Compilation, upload, deterministic state-machine self-test, real stationary `UNKNOWN -> STOP`, and continuous sampling all pass. A final real-sensor `STOP -> RUN -> STOP` movement sequence is still required before Stage 7 can be marked passed.
+
+## Stages 8-13 preparation
+
+The remaining stages were reviewed and scoped without claiming hardware completion:
+
+- Stage 8: supervised mounted-machine STOP/RUN dataset; blocked on safe site access and final external mount.
+- Stage 9: production threshold calibration; analyzer implemented and tested for separated, overlapping, and insufficient datasets; blocked on Stage 8 data.
+- Stage 10: non-blocking WiFi telemetry; blocked on production classifier and endpoint/protocol decision.
+- Stage 11: phone alert deduplication and policy; blocked on transport, provider, recipient, and alert policy.
+- Stage 12: buzzer, light sensors, and optional OLED; blocked on exact module inspection and final pin allocation.
+- Stage 13: enclosure and soak validation; blocked on prior stages, enclosure, and supervised installation.
+
+No external notification account, network endpoint, machine connection, or speculative hardware wiring was created during this preparation.

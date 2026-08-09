@@ -19,7 +19,13 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 | 4 | MPU6050 acceleration reading | Passed on hardware (2026-08-09) |
 | 5 | Vibration sampling and filtering baseline | Passed on hardware (2026-08-09) |
 | 6 | Labeled threshold dataset collection | Passed on hardware (2026-08-09) |
-| 7-13 | State classification through enclosure integration | Not started |
+| 7 | Hysteretic RUN/STOP state classifier | Ready for hardware verification |
+| 8 | Mounted machine dataset | Waiting for supervised machine access |
+| 9 | Production threshold calibration | Analyzer ready; waiting for Stage 8 data |
+| 10 | WiFi telemetry integration | Waiting for endpoint/protocol decision |
+| 11 | Phone alerts | Waiting for provider and alert policy |
+| 12 | Local interface and auxiliary sensors | Waiting for exact module inspection |
+| 13 | Enclosure and soak validation | Waiting for Stages 8-12 and installation |
 
 Progress only advances after the current stage is verified on the real hardware.
 
@@ -52,6 +58,8 @@ firmware/
     stage_05_vibration_sampling.ino
   stage_06_threshold_dataset/
     stage_06_threshold_dataset.ino
+  stage_07_state_classifier/
+    stage_07_state_classifier.ino
 docs/
   stage-0-1.md
   stage-2-wifi.md
@@ -59,7 +67,16 @@ docs/
   stage-4-acceleration.md
   stage-5-vibration-sampling.md
   stage-6-threshold-dataset.md
+  stage-7-state-classifier.md
+  stage-8-mounted-dataset.md
+  stage-9-production-thresholds.md
+  stage-10-wifi-telemetry.md
+  stage-11-phone-alerts.md
+  stage-12-local-interface.md
+  stage-13-enclosure-soak.md
   troubleshooting.md
+tools/
+  analyze_threshold_dataset.ps1
 ```
 
 ## Planned hardware

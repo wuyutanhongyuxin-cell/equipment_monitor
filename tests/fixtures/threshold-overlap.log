@@ -1,0 +1,4 @@
+data,label=STOP,index=1,rate_hz=200.00,valid=200/200,failed=0,missed=0,rms_g=0.01000,peak_g=0.02000
+data,label=STOP,index=2,rate_hz=200.00,valid=200/200,failed=0,missed=0,rms_g=0.08000,peak_g=0.10000
+data,label=RUN,index=1,rate_hz=200.00,valid=200/200,failed=0,missed=0,rms_g=0.06000,peak_g=0.10000
+data,label=RUN,index=2,rate_hz=200.00,valid=200/200,failed=0,missed=0,rms_g=0.20000,peak_g=0.40000
