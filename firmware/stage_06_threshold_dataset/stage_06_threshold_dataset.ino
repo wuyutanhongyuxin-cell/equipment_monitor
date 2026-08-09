@@ -16,12 +16,11 @@ constexpr uint32_t SAMPLE_INTERVAL_US = 1000000UL / SAMPLE_RATE_HZ;
 constexpr uint32_t WINDOW_SAMPLES = SAMPLE_RATE_HZ;
 constexpr uint32_t CALIBRATION_SAMPLES = SAMPLE_RATE_HZ * 2;
 constexpr uint32_t STILL_WINDOWS = 15;
-constexpr uint32_t PREPARE_WINDOWS = 10;
 constexpr uint32_t VIBRATION_WINDOWS = 15;
 constexpr float ACCEL_LSB_PER_G = 16384.0F;
 constexpr float GRAVITY_FILTER_ALPHA = 0.015466F;
 
-enum class Phase { WAITING, STILL, PREPARE, VIBRATION, DONE };
+enum class Phase { WAITING, STILL, WAIT_VIBRATION, VIBRATION, DONE };
 
 struct Acceleration { float x; float y; float z; };
 struct DatasetSummary {
@@ -158,7 +157,7 @@ void printSummary() {
   } else {
     Serial.println("threshold_candidate: none, datasets overlap");
   }
-  Serial.println("Dataset: complete; send g to repeat after keeping sensor stationary");
+  Serial.println("Dataset: complete; send s to repeat after keeping sensor stationary");
 }
 
 void finishWindow(uint32_t nowUs) {
@@ -173,20 +172,12 @@ void finishWindow(uint32_t nowUs) {
                   windowFailures, windowMissed, rmsG, windowPeakG);
     updateSummary(phase == Phase::STILL ? stillSummary : vibrationSummary,
                   rmsG, windowPeakG);
-  } else if (phase == Phase::PREPARE) {
-    Serial.printf("Prepare vibration: %lu seconds remaining\n", PREPARE_WINDOWS - phaseWindow);
   }
-
   ++phaseWindow;
   if (phase == Phase::STILL && phaseWindow >= STILL_WINDOWS) {
-    phase = Phase::PREPARE;
+    phase = Phase::WAIT_VIBRATION;
     phaseWindow = 0;
-    Serial.println("Phase: PREPARE; start repeated gentle taps when LED turns on");
-  } else if (phase == Phase::PREPARE && phaseWindow >= PREPARE_WINDOWS) {
-    phase = Phase::VIBRATION;
-    phaseWindow = 0;
-    digitalWrite(STATUS_LED_PIN, HIGH);
-    Serial.println("Phase: VIBRATION; LED ON; tap or gently move continuously");
+    Serial.println("Phase: STILL complete; send v only when ready to vibrate");
   } else if (phase == Phase::VIBRATION && phaseWindow >= VIBRATION_WINDOWS) {
     phase = Phase::DONE;
     digitalWrite(STATUS_LED_PIN, LOW);
@@ -196,7 +187,7 @@ void finishWindow(uint32_t nowUs) {
   resetWindow(nowUs);
 }
 
-void startDataset() {
+void startStillDataset() {
   stillSummary = DatasetSummary();
   vibrationSummary = DatasetSummary();
   phase = Phase::STILL;
@@ -205,6 +196,15 @@ void startDataset() {
   nextSampleUs = micros() + SAMPLE_INTERVAL_US;
   resetWindow(micros());
   Serial.println("Phase: STILL; do not touch sensor for 15 seconds");
+}
+
+void startVibrationDataset() {
+  phase = Phase::VIBRATION;
+  phaseWindow = 0;
+  digitalWrite(STATUS_LED_PIN, HIGH);
+  nextSampleUs = micros() + SAMPLE_INTERVAL_US;
+  resetWindow(micros());
+  Serial.println("Phase: VIBRATION; LED ON; tap or gently move continuously for 15 seconds");
 }
 
 void setup() {
@@ -228,14 +228,19 @@ void setup() {
     stopWithError("Sensor init: configuration verification failed");
   }
   calibrateGravity();
-  Serial.println("Dataset: ready; send g to start");
+  Serial.println("Dataset: ready; send s to collect STILL first");
 }
 
 void loop() {
-  if ((phase == Phase::WAITING || phase == Phase::DONE) && Serial.available()) {
-    if (Serial.read() == 'g') startDataset();
+  if (Serial.available()) {
+    const char command = Serial.read();
+    if ((phase == Phase::WAITING || phase == Phase::DONE) && command == 's') {
+      startStillDataset();
+    } else if (phase == Phase::WAIT_VIBRATION && command == 'v') {
+      startVibrationDataset();
+    }
   }
-  if (phase == Phase::WAITING || phase == Phase::DONE) return;
+  if (phase == Phase::WAITING || phase == Phase::WAIT_VIBRATION || phase == Phase::DONE) return;
 
   const uint32_t nowUs = micros();
   if (static_cast<int32_t>(nowUs - nextSampleUs) < 0) return;

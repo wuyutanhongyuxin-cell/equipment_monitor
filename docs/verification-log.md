@@ -316,3 +316,9 @@ threshold_candidate: none, datasets overlap
 ### Current conclusion
 
 Stage 6 is not yet passed. The acquisition pipeline and rejection logic work, but the deliberate physical vibration was not sustained within the labeled LED-on interval. A new run must be explicitly coordinated with the operator. No threshold is accepted from these overlapping datasets.
+
+### Split-phase synchronization update
+
+The firmware was changed so stationary collection starts only with `s`, then pauses indefinitely before vibration collection starts with `v`. This removed the automatic countdown race and produced clean stationary datasets with RMS ranges of 0.00423g to 0.00472g and 0.00417g to 0.00467g.
+
+Two split-phase vibration attempts still started too late relative to the serial command. The first contained no physical response. In the second, windows 12 through 15 increased from `rms_g=0.03018` to `0.21148`, while windows 1 through 11 remained near 0.004g. This confirms that deliberate movement is strongly detectable, but user-message latency still contaminated the nominal vibration label. The next attempt must begin physical movement before the `v` command is sent and continue for at least 20 seconds.

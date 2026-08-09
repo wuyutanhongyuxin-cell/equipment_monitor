@@ -7,12 +7,11 @@ Collect labeled stationary and deliberately disturbed vibration windows using th
 ## Procedure
 
 1. Keep the sensor on a stable surface and upload `firmware/stage_06_threshold_dataset/stage_06_threshold_dataset.ino`.
-2. Open serial at 115200 baud and wait for `Dataset: ready; send g to start`.
-3. Send the single character `g`.
-4. Keep the board untouched during the 15-second `STILL` phase.
-5. Wait through the 10-second `PREPARE` countdown.
-6. When the onboard LED turns on, repeatedly tap the table beside the breadboard or gently move the whole breadboard for the full 15-second `VIBRATION` phase. Do not touch wires or pins.
-7. Stop when the LED turns off and retain all labeled output and summaries.
+2. Open serial at 115200 baud and wait for `Dataset: ready; send s to collect STILL first`.
+3. Send `s`, then keep the board untouched throughout the 15-second `STILL` phase.
+4. Wait until `Phase: STILL complete; send v only when ready to vibrate` appears. The firmware remains paused, so there is no timing race.
+5. Prepare to tap, send `v`, and immediately tap the table beside the breadboard two or three times per second for the full 15-second `VIBRATION` phase. Do not touch wires or pins.
+6. Stop when the LED turns off and retain all labeled output and summaries.
 
 ## Pass criteria
 
