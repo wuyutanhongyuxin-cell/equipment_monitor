@@ -248,4 +248,55 @@ The measured magnitude remained approximately 1.022g to 1.042g, inside the Stage
 
 ### Conclusion
 
-Stage 4 passes. The MPU6050 provides stable, plausible three-axis acceleration data with no read failures during the hardware capture. Stage 5 may now define the sampling and filtering method used for vibration detection.
+Stage 4 passes for acceleration behavior. The sensor provides stable, plausible three-axis data with no read failures during the hardware capture. Later Stage 5 diagnostics established that this module returns non-standard `WHO_AM_I=0x74` rather than the official MPU-6050 value `0x68`; therefore the fitted sensor is treated as MPU6050-compatible, not authenticated as an original TDK/InvenSense part. The Stage 4 sketch was corrected to halt on an unknown identity instead of returning from `setup()` and unintentionally continuing into `loop()`.
+
+## Stage 5
+
+Verified on 2026-08-09 using the unchanged breadboard wiring and the MPU6050-compatible sensor.
+
+### Sampling design
+
+- Accelerometer sample target: 200 Hz
+- I2C clock: 50 kHz
+- MPU6050-compatible DLPF setting: approximately 44 Hz
+- Accelerometer range: +/-2g
+- Startup gravity calibration: 400 valid samples
+- Gravity/orientation tracking: 0.5 Hz low-pass
+- Statistics window: 200 attempts / approximately 1 second
+
+Each sample subtracts the slowly tracked three-axis gravity vector. The firmware calculates the RMS and peak magnitude of the remaining vibration vector for each window.
+
+### Identity investigation
+
+Initial Stage 5 attempts halted because the identity register consistently returned `0x74`. The Stage 3 scanner was reflashed as a differential check and found `0x68` on five consecutive address scans, proving that the I2C address path remained connected. Reflashing Stage 4 under the same reset conditions also read `WHO_AM_I=0x74` while continuing to produce plausible acceleration data.
+
+The official MPU-6050 register map specifies `WHO_AM_I=0x68`; `0x74` is non-standard. Tests at both 100 kHz and 50 kHz, with repeated-start and stop-separated register reads, returned the same `0x74`. The hardware is therefore recorded as a compatible, non-authenticated sensor. Stage 5 explicitly reports this identity and proceeds only after the DLPF, sample-divider, and accelerometer-range registers are written and read back correctly.
+
+### Hardware result
+
+Initialization and calibration completed without I2C failures:
+
+```text
+MPU6050 init: WHO_AM_I=0x74, non-standard compatible device
+MPU6050 init: ready, sample_target_hz=200, dlpf_hz=44, accel_range=+/-2g
+Calibration: keep sensor stationary, samples=400
+Calibration: ready, gravity_g=(-0.1259,-0.0202,+1.0229), failures=0
+```
+
+The stationary capture produced 42 consecutive complete windows. Every window reported `valid=200/200`, `failed=0`, and `missed=0`. The measured ranges were:
+
+- Actual sample rate: 199.63 Hz to 200.00 Hz
+- Stationary vibration RMS: 0.00416g to 0.00477g
+- Stationary peak: 0.00817g to 0.01375g
+
+Representative output:
+
+```text
+window: rate_hz=199.63, valid=200/200, failed=0, missed=0, vibration_rms_g=0.00475, peak_g=0.01148
+window: rate_hz=200.00, valid=200/200, failed=0, missed=0, vibration_rms_g=0.00442, peak_g=0.01044
+window: rate_hz=200.00, valid=200/200, failed=0, missed=0, vibration_rms_g=0.00416, peak_g=0.00975
+```
+
+### Conclusion
+
+Stage 5 passes. The system now has a verified 200 Hz sampling pipeline, gravity removal, one-second RMS/peak windows, zero observed read failures or missed periods, and a measured stationary noise baseline. Stage 6 may collect deliberately moved or vibrating data and design classification thresholds; no RUN/STOP threshold has been selected yet.

@@ -37,6 +37,13 @@ int16_t combineBytes(uint8_t highByte, uint8_t lowByte) {
   return static_cast<int16_t>((static_cast<uint16_t>(highByte) << 8) | lowByte);
 }
 
+void stopWithError(const char *message) {
+  Serial.println(message);
+  while (true) {
+    delay(1000);
+  }
+}
+
 void setup() {
   Serial.begin(115200);
   delay(1000);
@@ -47,19 +54,19 @@ void setup() {
 
   uint8_t whoAmI = 0;
   if (!readRegisters(REG_WHO_AM_I, &whoAmI, 1)) {
-    Serial.println("MPU6050 init: WHO_AM_I read failed");
-    return;
+    stopWithError("MPU6050 init: WHO_AM_I read failed");
   }
 
   Serial.printf("MPU6050 WHO_AM_I=0x%02X\n", whoAmI);
-  if (whoAmI != MPU6050_ADDRESS) {
-    Serial.println("MPU6050 init: unexpected identity");
-    return;
+  if (whoAmI != 0x68 && whoAmI != 0x74) {
+    stopWithError("MPU6050 init: unexpected identity");
+  }
+  if (whoAmI == 0x74) {
+    Serial.println("MPU6050 init: non-standard compatible device");
   }
 
   if (!writeRegister(REG_PWR_MGMT_1, 0x00)) {
-    Serial.println("MPU6050 init: wake failed");
-    return;
+    stopWithError("MPU6050 init: wake failed");
   }
 
   delay(100);

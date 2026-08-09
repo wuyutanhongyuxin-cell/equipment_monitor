@@ -40,9 +40,11 @@ The axis carrying gravity depends on board orientation. A stationary sensor shou
 
 ## Pass criteria
 
-- `WHO_AM_I` is `0x68`.
+- `WHO_AM_I` is standard `0x68` or the tested module's explicitly reported compatible value `0x74`.
 - Initialization reaches `MPU6050 init: ready`.
 - At least 30 seconds of continuous samples contain no read failure.
 - Stationary acceleration magnitude remains plausibly near 1g (accepted bring-up range: 0.8g to 1.2g).
 
 Do not begin Stage 5 until these criteria pass on the real hardware.
+
+The tested module was later found to return `WHO_AM_I=0x74`, which is not the official MPU-6050 value. Stage 4 therefore verifies compatible acceleration behavior, not authentic TDK/InvenSense device identity.

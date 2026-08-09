@@ -17,7 +17,8 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 | 2 | Non-blocking WiFi connection test | Passed on hardware (2026-08-09) |
 | 3 | MPU6050 I2C diagnostic scanner | Passed on hardware (2026-08-09) |
 | 4 | MPU6050 acceleration reading | Passed on hardware (2026-08-09) |
-| 5-13 | Sampling design through enclosure integration | Not started |
+| 5 | Vibration sampling and filtering baseline | Passed on hardware (2026-08-09) |
+| 6-13 | Dataset collection through enclosure integration | Not started |
 
 Progress only advances after the current stage is verified on the real hardware.
 
@@ -46,18 +47,21 @@ firmware/
     stage_03_i2c_scanner.ino
   stage_04_accel_read/
     stage_04_accel_read.ino
+  stage_05_vibration_sampling/
+    stage_05_vibration_sampling.ino
 docs/
   stage-0-1.md
   stage-2-wifi.md
   stage-3-i2c.md
   stage-4-acceleration.md
+  stage-5-vibration-sampling.md
   troubleshooting.md
 ```
 
 ## Planned hardware
 
 - ESP32 development board with ESP-32E module and CH340 USB-to-serial bridge
-- GY-521 MPU6050 module (not connected in Stage 0/1)
+- GY-521 module with an MPU6050-compatible, non-standard-identity sensor (not connected in Stage 0/1)
 - Breadboard and jumper wires (not needed in Stage 0/1)
 - Active buzzer module (later stage)
 - Two LM393 light sensor modules (later stage)
