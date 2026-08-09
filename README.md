@@ -14,7 +14,8 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 |---|---|---|
 | 0 | Arduino IDE and ESP32 board support | Passed on hardware (2026-08-08) |
 | 1 | Compile, upload, and serial output | Passed on hardware (2026-08-08) |
-| 2-13 | WiFi through enclosure integration | Not started |
+| 2 | Non-blocking WiFi connection test | Prepared, waiting for credentials and hardware verification |
+| 3-13 | MPU6050 I2C through enclosure integration | Not started |
 
 Progress only advances after the current stage is verified on the real hardware.
 
@@ -28,14 +29,20 @@ See [docs/verification-log.md](docs/verification-log.md) for the exact tool vers
 4. Compile, upload, then open Serial Monitor at `115200 baud`.
 5. Report the compile/upload result and the first several Serial Monitor lines before proceeding.
 
+Stage 2 instructions are in [docs/stage-2-wifi.md](docs/stage-2-wifi.md). Do not start Stage 3 wiring until Stage 2 is verified.
+
 ## Repository layout
 
 ```text
 firmware/
   stage_01_serial_test/
     stage_01_serial_test.ino
+  stage_02_wifi_test/
+    secrets.example.h
+    stage_02_wifi_test.ino
 docs/
   stage-0-1.md
+  stage-2-wifi.md
   troubleshooting.md
 ```
 
