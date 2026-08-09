@@ -64,3 +64,41 @@ NO_PROXY=127.0.0.1,localhost
 ```
 
 After a clean restart, the IDE reached the `ready` application state, opened `stage_01_serial_test`, and detected COM6. The existing external proxy settings were retained.
+
+## Stage 2
+
+Verified on 2026-08-09 using an iPhone Personal Hotspot with Maximize Compatibility enabled.
+
+### Network
+
+- SSID: `iPhone`
+- Band: 2.4 GHz
+- Channel observed by Windows: 6
+- Security: WPA2-Personal
+- Credentials: stored only in the Git-ignored local `secrets.h`
+
+### Compile and upload
+
+```text
+Sketch uses 888312 bytes (67%) of program storage space.
+Global variables use 45264 bytes (13%) of dynamic memory.
+```
+
+The sketch compiled for `ESP32 Dev Module`, uploaded through COM6, and all written sections passed hash verification. No BOOT-button intervention was required.
+
+### Connection and recovery
+
+The initial connection attempts reported `WL_DISCONNECTED` while the hotspot was not ready. The program continued running and retrying every ten seconds instead of blocking. Once the hotspot was available, the same running firmware recovered automatically without an ESP32 reset.
+
+Captured serial output at 115200 baud:
+
+```text
+WiFi: connected, IP=172.20.10.2, RSSI=-12 dBm
+WiFi: connected, IP=172.20.10.2, RSSI=-11 dBm
+WiFi: connected, IP=172.20.10.2, RSSI=-10 dBm
+WiFi: connected, IP=172.20.10.2, RSSI=-10 dBm
+```
+
+### Conclusion
+
+Stage 2 passes. The ESP32 connects to 2.4 GHz WiFi, obtains a DHCP address, reports RSSI, and recovers after an unavailable-network interval without blocking the main loop. Do not wire the MPU6050 until Stage 3 instructions and voltage/pin checks are complete.

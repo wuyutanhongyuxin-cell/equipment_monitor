@@ -14,7 +14,7 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 |---|---|---|
 | 0 | Arduino IDE and ESP32 board support | Passed on hardware (2026-08-08) |
 | 1 | Compile, upload, and serial output | Passed on hardware (2026-08-08) |
-| 2 | Non-blocking WiFi connection test | Prepared, waiting for credentials and hardware verification |
+| 2 | Non-blocking WiFi connection test | Passed on hardware (2026-08-09) |
 | 3-13 | MPU6050 I2C through enclosure integration | Not started |
 
 Progress only advances after the current stage is verified on the real hardware.
