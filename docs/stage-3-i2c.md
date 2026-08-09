@@ -22,7 +22,9 @@ Disconnect the ESP32 Micro USB cable before inserting, removing, or moving any j
 
 ## Wiring
 
-Use four female-to-female jumper wires because both photographed boards have male header pins.
+Both photographed boards have male header pins, while the available jumper set does not include female-to-female wires. For the verified hardware set, plug both modules into the MB-102 breadboard and use four male-to-male jumper wires between breadboard tie points. Do not attempt to join two jumper wires end-to-end as a permanent connection.
+
+Place the ESP32 so its two header rows straddle the breadboard center channel. Place the GY-521 in a separate clear area with each of its eight pins in a different numbered breadboard row. Do not put two GY-521 pins into the same connected five-hole row.
 
 | ESP32 NodeMCU-32 silkscreen | GY-521 silkscreen | Purpose |
 |---|---|---|
