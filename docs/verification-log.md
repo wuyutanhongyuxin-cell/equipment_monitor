@@ -102,3 +102,122 @@ WiFi: connected, IP=172.20.10.2, RSSI=-10 dBm
 ### Conclusion
 
 Stage 2 passes. The ESP32 connects to 2.4 GHz WiFi, obtains a DHCP address, reports RSSI, and recovers after an unavailable-network interval without blocking the main loop. Do not wire the MPU6050 until Stage 3 instructions and voltage/pin checks are complete.
+
+## Stage 3
+
+First hardware attempt on 2026-08-09 after the MPU6050 wiring was reported connected.
+
+### Compile and upload
+
+The Stage 3 I2C scanner compiled successfully for `ESP32 Dev Module` using `esp32:esp32@3.3.10-cn`.
+
+The sketch uploaded through `COM6`. The ESP32 was detected as:
+
+```text
+Chip type: ESP32-D0WD-V3 (revision v3.1)
+Crystal frequency: 40MHz
+```
+
+All flashed sections passed hash verification and the board hard-reset through RTS.
+
+### Initial scanner result
+
+The first scanner firmware ran, but repeated scans found no I2C devices:
+
+```text
+I2C scan: starting
+I2C scan: no devices found
+I2C scan: starting
+I2C scan: no devices found
+I2C scan: starting
+I2C scan: no devices found
+```
+
+### Diagnostic scanner result
+
+The scanner was upgraded to test both the required primary mapping and a software-swapped SDA/SCL mapping. This checks whether the physical SDA/SCL wires are crossed without changing the wiring.
+
+Captured serial output at 115200 baud:
+
+```text
+I2C mapping: primary, SDA=GPIO21, SCL=GPIO22
+I2C scan: starting
+I2C scan: no devices found
+I2C mapping: swapped, SDA=GPIO22, SCL=GPIO21
+I2C scan: starting
+I2C scan: no devices found
+I2C diagnostic: no devices on either mapping
+I2C diagnostic: check 3V3, GND, breadboard rows, and jumper contact
+```
+
+The wiring was then photographed with both the ESP32 power LED and GY-521 LED lit. A retest under that visible powered condition still produced `no devices on either mapping`. This confirms that module LEDs are not sufficient Stage 3 evidence; the data lines still did not acknowledge on GPIO21/GPIO22 or the swapped GPIO22/GPIO21 test.
+
+After the wiring was rechecked and reported correct, the scanner was extended with a wire-finder diagnostic that probes common ESP32 GPIO pin pairs for only the expected MPU6050 addresses. This also failed to find the sensor:
+
+```text
+I2C wire finder: probing 19 candidate GPIO pins for 0x68/0x69
+I2C wire finder: no expected address found on candidate GPIO pairs
+```
+
+The GY-521 connector was reseated and the same diagnostic was run again. The primary GPIO21/GPIO22 scan, swapped GPIO22/GPIO21 scan, and 19-pin wire-finder scan still found no expected MPU6050 address.
+
+The four connections were then remade with replacement jumper wires and retested. The result was unchanged: the primary GPIO21/GPIO22 scan, swapped GPIO22/GPIO21 scan, and 19-pin wire-finder scan all still failed to find `0x68` or `0x69`.
+
+Because no replacement MPU6050 module was available, a line-level diagnostic was added. It showed GPIO21 behaving like it had an external pull-up, while GPIO22 did not:
+
+```text
+I2C line level: GPIO21, internal pulldown=HIGH, internal pullup=HIGH -> external high/pullup detected
+I2C line level: GPIO22, internal pulldown=LOW, internal pullup=HIGH -> no external pullup detected
+```
+
+During the same diagnostic run, the sensor did briefly acknowledge at the expected address and the primary mapping produced one pass candidate:
+
+```text
+I2C mapping: primary, SDA=GPIO21, SCL=GPIO22
+I2C scan: starting
+I2C device found at 0x68
+I2C scan: complete, devices=1
+I2C diagnostic: primary mapping has exactly one expected MPU6050 address
+I2C diagnostic: Stage 3 pass candidate on primary wiring
+```
+
+Later scans returned to `no devices found`, so the Stage 3 pass criteria were not met.
+
+After another `P22 -> SCL` reseat, a longer serial capture showed major improvement. The primary GPIO21/GPIO22 mapping found exactly one expected device at `0x68` multiple times, including a run of more than three consecutive successful scans:
+
+```text
+I2C mapping: primary, SDA=GPIO21, SCL=GPIO22
+I2C scan: starting
+I2C device found at 0x68
+I2C scan: complete, devices=1
+I2C diagnostic: primary mapping has exactly one expected MPU6050 address
+I2C diagnostic: Stage 3 pass candidate on primary wiring
+```
+
+However, the same capture later returned to `no devices found`, and the line-level diagnostic again showed GPIO22 without an external pull-up:
+
+```text
+I2C line level: GPIO21, internal pulldown=HIGH, internal pullup=HIGH -> external high/pullup detected
+I2C line level: GPIO22, internal pulldown=LOW, internal pullup=HIGH -> no external pullup detected
+```
+
+A later 80-second capture improved further: the primary GPIO21/GPIO22 mapping produced a long burst of consecutive `0x68` acknowledgements, then dropped back to `no devices found` near the end of the same capture. During one dropout both GPIO21 and GPIO22 showed external pull-ups; during the next dropout GPIO22 again lost the external pull-up indication. This confirms the sensor and address are correct, but the connection is still intermittent over a longer observation window.
+
+After rewiring with male-to-female jumpers, an 80-second capture found no `0x68` acknowledgements. The line-level diagnostic was consistent across repeated scans: GPIO21 reported an external pull-up, while GPIO22 reported no external pull-up. The failure therefore remains focused on the `P22 -> SCL` electrical path, not on power, WiFi, or the MPU6050 address.
+
+After the wiring error was corrected, an 80-second capture showed stable Stage 3 behavior. Every scan in the capture used the primary mapping and found exactly one expected MPU6050 device at `0x68`:
+
+```text
+I2C mapping: primary, SDA=GPIO21, SCL=GPIO22
+I2C scan: starting
+I2C device found at 0x68
+I2C scan: complete, devices=1
+I2C diagnostic: primary mapping has exactly one expected MPU6050 address
+I2C diagnostic: Stage 3 pass candidate on primary wiring
+```
+
+No `no devices found` result appeared during the stable capture.
+
+### Conclusion
+
+Stage 3 passes. The MPU6050 acknowledges at `0x68` on the required primary mapping, `SDA=GPIO21` and `SCL=GPIO22`, and the final 80-second capture remained stable. The earlier failures were caused by incorrect or unstable wiring on the `P22 -> SCL` path. Stage 4 may now install an MPU6050 library and read acceleration values.

@@ -15,12 +15,12 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 | 0 | Arduino IDE and ESP32 board support | Passed on hardware (2026-08-08) |
 | 1 | Compile, upload, and serial output | Passed on hardware (2026-08-08) |
 | 2 | Non-blocking WiFi connection test | Passed on hardware (2026-08-09) |
-| 3 | MPU6050 I2C scanner | Prepared, waiting for wiring and hardware verification |
+| 3 | MPU6050 I2C diagnostic scanner | Passed on hardware (2026-08-09) |
 | 4-13 | Acceleration reading through enclosure integration | Not started |
 
-Progress only advances after the current stage is verified on the real hardware.
+Progress only advances after the current stage is verified on the real hardware. Stage 3 is not passed until the scanner sees exactly one expected MPU6050 address on the primary wiring.
 
-See [docs/verification-log.md](docs/verification-log.md) for the exact tool versions and captured Stage 0/1 results.
+See [docs/verification-log.md](docs/verification-log.md) for the exact tool versions and captured hardware results.
 
 ## Stage 0/1 quick start
 

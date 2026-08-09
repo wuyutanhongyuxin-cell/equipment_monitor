@@ -48,7 +48,7 @@ Before reconnecting USB, verify all four statements visually:
 
 Take a clear photo showing both boards and all four wire endpoints before applying power.
 
-## Scanner behavior
+## Diagnostic scanner behavior
 
 The scanner uses the ESP32 Arduino `Wire` library built into the board core:
 
@@ -61,19 +61,50 @@ The scanner uses the ESP32 Arduino `Wire` library built into the board core:
 
 No external sensor library is required for Stage 3.
 
+The scanner first tests the required primary mapping:
+
+- SDA: GPIO21
+- SCL: GPIO22
+
+If the primary mapping does not find exactly one MPU6050 address, it then tests a software-swapped mapping:
+
+- SDA: GPIO22
+- SCL: GPIO21
+
+The swapped scan is diagnostic only. A response only on the swapped mapping means the physical SDA/SCL wires are probably crossed; it is not a Stage 3 pass.
+
+If neither primary nor swapped mapping finds a device, the scanner also probes a wider set of common ESP32 GPIO pairs for only the expected MPU6050 addresses, `0x68` and `0x69`. This wire-finder step helps detect a wire placed on the wrong ESP32 GPIO. A wire-finder hit is still not a pass; the wiring must be corrected back to GPIO21/GPIO22 and retested.
+
+The scanner also prints a line-level diagnostic for GPIO21 and GPIO22. A healthy connected I2C idle line is expected to read HIGH. If a line prints `internal pulldown=LOW, internal pullup=HIGH`, the ESP32 is not seeing an external pull-up on that line; inspect that specific wire and the matching GY-521 header pin.
+
 ## Expected output
 
 With AD0 left unconnected on a normal GY-521, the expected address is usually `0x68`:
 
 ```text
-ESP32 I2C scanner boot OK
-I2C pins: SDA=GPIO21, SCL=GPIO22, frequency=100000 Hz
+ESP32 I2C diagnostic scanner boot OK
+I2C primary wiring: SDA=GPIO21, SCL=GPIO22, frequency=100000 Hz
+I2C mapping: primary, SDA=GPIO21, SCL=GPIO22
 I2C scan: starting
 I2C device found at 0x68
 I2C scan: complete, devices=1
+I2C diagnostic: primary mapping has exactly one expected MPU6050 address
+I2C diagnostic: Stage 3 pass candidate on primary wiring
 ```
 
 If AD0 is pulled high, `0x69` is valid instead. No other address is accepted as MPU6050 evidence without further investigation.
+
+If the scanner prints `no devices on either mapping` and `wire finder: no expected address found`, do not proceed to Stage 4. Power off the ESP32 and inspect:
+
+- module LEDs only prove that power is present; they do not prove SDA/SCL communication
+- whether GY-521 `VCC` is really connected to ESP32 `3V3`
+- whether GY-521 `GND` shares ESP32 `GND`
+- whether each GY-521 pin is in a separate breadboard row
+- whether the jumper ends actually contact the same breadboard tie points as the module pins
+- whether the ESP32 is straddling the breadboard center channel instead of shorting both sides into one row group
+- whether the GY-521 `SCL` and `SDA` header solder joints are actually connected, not just mechanically present
+
+If GPIO21 reports external pull-up but GPIO22 reports no external pull-up, focus on `P22 -> SCL`. If GPIO22 reports external pull-up but GPIO21 does not, focus on `P21 -> SDA`.
 
 ## Pass criteria
 
