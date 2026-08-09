@@ -221,3 +221,31 @@ No `no devices found` result appeared during the stable capture.
 ### Conclusion
 
 Stage 3 passes. The MPU6050 acknowledges at `0x68` on the required primary mapping, `SDA=GPIO21` and `SCL=GPIO22`, and the final 80-second capture remained stable. The earlier failures were caused by incorrect or unstable wiring on the `P22 -> SCL` path. Stage 4 may now install an MPU6050 library and read acceleration values.
+
+## Stage 4
+
+Verified on 2026-08-09 with the Stage 3 wiring left unchanged.
+
+### Implementation
+
+The Stage 4 sketch uses the ESP32 core `Wire` library at 100 kHz. It reads `WHO_AM_I`, wakes the MPU6050 through `PWR_MGMT_1`, and reads the six acceleration bytes beginning at `ACCEL_XOUT_H`. The default +/-2g scale converts raw values using 16384 LSB/g.
+
+The sketch compiled for `ESP32 Dev Module`, uploaded through `COM6`, and all flashed sections passed hash verification.
+
+### Acceleration result
+
+A continuous capture of approximately 40 seconds produced more than 80 samples without any `MPU6050 read: failed` output. Representative stationary samples were:
+
+```text
+accel_g: x=-0.130, y=-0.017, z=+1.023, magnitude=1.032
+accel_g: x=-0.126, y=-0.020, z=+1.029, magnitude=1.037
+accel_g: x=-0.128, y=-0.019, z=+1.020, magnitude=1.028
+accel_g: x=-0.130, y=-0.017, z=+1.033, magnitude=1.042
+accel_g: x=-0.126, y=-0.024, z=+1.014, magnitude=1.022
+```
+
+The measured magnitude remained approximately 1.022g to 1.042g, inside the Stage 4 accepted stationary range of 0.8g to 1.2g.
+
+### Conclusion
+
+Stage 4 passes. The MPU6050 provides stable, plausible three-axis acceleration data with no read failures during the hardware capture. Stage 5 may now define the sampling and filtering method used for vibration detection.

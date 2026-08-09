@@ -16,9 +16,10 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 | 1 | Compile, upload, and serial output | Passed on hardware (2026-08-08) |
 | 2 | Non-blocking WiFi connection test | Passed on hardware (2026-08-09) |
 | 3 | MPU6050 I2C diagnostic scanner | Passed on hardware (2026-08-09) |
-| 4-13 | Acceleration reading through enclosure integration | Not started |
+| 4 | MPU6050 acceleration reading | Passed on hardware (2026-08-09) |
+| 5-13 | Sampling design through enclosure integration | Not started |
 
-Progress only advances after the current stage is verified on the real hardware. Stage 3 is not passed until the scanner sees exactly one expected MPU6050 address on the primary wiring.
+Progress only advances after the current stage is verified on the real hardware.
 
 See [docs/verification-log.md](docs/verification-log.md) for the exact tool versions and captured hardware results.
 
@@ -43,10 +44,13 @@ firmware/
     stage_02_wifi_test.ino
   stage_03_i2c_scanner/
     stage_03_i2c_scanner.ino
+  stage_04_accel_read/
+    stage_04_accel_read.ino
 docs/
   stage-0-1.md
   stage-2-wifi.md
   stage-3-i2c.md
+  stage-4-acceleration.md
   troubleshooting.md
 ```
 
