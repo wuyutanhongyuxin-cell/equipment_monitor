@@ -15,7 +15,8 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 | 0 | Arduino IDE and ESP32 board support | Passed on hardware (2026-08-08) |
 | 1 | Compile, upload, and serial output | Passed on hardware (2026-08-08) |
 | 2 | Non-blocking WiFi connection test | Passed on hardware (2026-08-09) |
-| 3-13 | MPU6050 I2C through enclosure integration | Not started |
+| 3 | MPU6050 I2C scanner | Prepared, waiting for wiring and hardware verification |
+| 4-13 | Acceleration reading through enclosure integration | Not started |
 
 Progress only advances after the current stage is verified on the real hardware.
 
@@ -40,9 +41,12 @@ firmware/
   stage_02_wifi_test/
     secrets.example.h
     stage_02_wifi_test.ino
+  stage_03_i2c_scanner/
+    stage_03_i2c_scanner.ino
 docs/
   stage-0-1.md
   stage-2-wifi.md
+  stage-3-i2c.md
   troubleshooting.md
 ```
 
