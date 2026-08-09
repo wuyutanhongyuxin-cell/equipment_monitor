@@ -18,7 +18,8 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 | 3 | MPU6050 I2C diagnostic scanner | Passed on hardware (2026-08-09) |
 | 4 | MPU6050 acceleration reading | Passed on hardware (2026-08-09) |
 | 5 | Vibration sampling and filtering baseline | Passed on hardware (2026-08-09) |
-| 6-13 | Dataset collection through enclosure integration | Not started |
+| 6 | Labeled threshold dataset collection | Ready for hardware verification |
+| 7-13 | State classification through enclosure integration | Not started |
 
 Progress only advances after the current stage is verified on the real hardware.
 
@@ -49,12 +50,15 @@ firmware/
     stage_04_accel_read.ino
   stage_05_vibration_sampling/
     stage_05_vibration_sampling.ino
+  stage_06_threshold_dataset/
+    stage_06_threshold_dataset.ino
 docs/
   stage-0-1.md
   stage-2-wifi.md
   stage-3-i2c.md
   stage-4-acceleration.md
   stage-5-vibration-sampling.md
+  stage-6-threshold-dataset.md
   troubleshooting.md
 ```
 

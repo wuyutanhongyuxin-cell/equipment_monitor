@@ -300,3 +300,19 @@ window: rate_hz=200.00, valid=200/200, failed=0, missed=0, vibration_rms_g=0.004
 ### Conclusion
 
 Stage 5 passes. The system now has a verified 200 Hz sampling pipeline, gravity removal, one-second RMS/peak windows, zero observed read failures or missed periods, and a measured stationary noise baseline. Stage 6 may collect deliberately moved or vibrating data and design classification thresholds; no RUN/STOP threshold has been selected yet.
+
+## Stage 6
+
+Started on 2026-08-09. The labeled collection firmware compiled, uploaded to `COM6`, verified its configuration registers, calibrated with 400 valid samples and zero failures, and waited for an explicit serial `g` command before each run.
+
+Two collection attempts each produced 15 stationary and 15 nominally vibrating windows. Every window contained `valid=200/200`, `failed=0`, and `missed=0`, at 199.63 Hz to 200.00 Hz. The first attempt contained only one clearly disturbed vibration window (`rms_g=0.07567`, `peak_g=0.62368`); the other 14 vibration windows remained near the stationary baseline. The second attempt contained no sustained vibration response, and one stationary window was disturbed instead.
+
+Both attempts correctly reported:
+
+```text
+threshold_candidate: none, datasets overlap
+```
+
+### Current conclusion
+
+Stage 6 is not yet passed. The acquisition pipeline and rejection logic work, but the deliberate physical vibration was not sustained within the labeled LED-on interval. A new run must be explicitly coordinated with the operator. No threshold is accepted from these overlapping datasets.
