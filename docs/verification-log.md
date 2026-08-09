@@ -322,3 +322,19 @@ Stage 6 is not yet passed. The acquisition pipeline and rejection logic work, bu
 The firmware was changed so stationary collection starts only with `s`, then pauses indefinitely before vibration collection starts with `v`. This removed the automatic countdown race and produced clean stationary datasets with RMS ranges of 0.00423g to 0.00472g and 0.00417g to 0.00467g.
 
 Two split-phase vibration attempts still started too late relative to the serial command. The first contained no physical response. In the second, windows 12 through 15 increased from `rms_g=0.03018` to `0.21148`, while windows 1 through 11 remained near 0.004g. This confirms that deliberate movement is strongly detectable, but user-message latency still contaminated the nominal vibration label. The next attempt must begin physical movement before the `v` command is sent and continue for at least 20 seconds.
+
+### Final synchronized dataset
+
+For the final attempt, physical movement began before the `v` command and continued throughout the complete 15-second vibration capture. All 30 labeled windows reported 200 valid samples, zero I2C failures, zero missed sample periods, and a measured rate of 199.63 Hz to 200.00 Hz.
+
+```text
+summary,label=STILL,windows=15,rms_min=0.00437,rms_mean=0.00738,rms_max=0.01909,peak_max=0.05835
+summary,label=VIBRATION,windows=15,rms_min=0.21883,rms_mean=0.32073,rms_max=0.45213,peak_max=2.69212
+threshold_candidate: vibration_rms_g=0.11896, separation_gap_g=0.19974
+```
+
+The stationary and vibration RMS ranges are completely separated. The candidate `0.11896g` threshold is the midpoint between the observed stationary maximum and vibration minimum.
+
+### Final conclusion
+
+Stage 6 passes. The labeled acquisition and overlap-rejection workflow is verified, and deliberate bench movement is separable from stationary noise in this dataset. The `0.11896g` value is a bench-test candidate only; it must not be treated as a real equipment RUN/STOP threshold until the sensor is mounted in its intended location and actual machine-state datasets are collected.

@@ -22,3 +22,7 @@ Collect labeled stationary and deliberately disturbed vibration windows using th
 - A threshold is accepted only if `vibration rms_min > still rms_max`; otherwise repeat with a more representative vibration method or defer threshold selection.
 
 The resulting threshold is a bench-test candidate only. It must not be treated as a production machine threshold until data is collected from the real mounting location and actual machine RUN/STOP states.
+
+## Verified bench result
+
+The final synchronized hardware run produced 15 complete windows per label with zero read failures and zero missed periods. Stationary RMS was 0.00437g to 0.01909g; deliberate movement RMS was 0.21883g to 0.45213g. The ranges were separated by 0.19974g, producing a bench-only midpoint candidate of 0.11896g.
