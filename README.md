@@ -19,7 +19,7 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 | 4 | MPU6050 acceleration reading | Passed on hardware (2026-08-09) |
 | 5 | Vibration sampling and filtering baseline | Passed on hardware (2026-08-09) |
 | 6 | Labeled threshold dataset collection | Passed on hardware (2026-08-09) |
-| 7 | Hysteretic RUN/STOP state classifier | Ready for hardware verification |
+| 7 | Hysteretic RUN/STOP state classifier | Passed on hardware (2026-08-10) |
 | 8 | Mounted machine dataset | Waiting for supervised machine access |
 | 9 | Production threshold calibration | Analyzer ready; waiting for Stage 8 data |
 | 10 | WiFi telemetry integration | Waiting for endpoint/protocol decision |

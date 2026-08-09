@@ -370,7 +370,17 @@ state=STOP,rms=0.00432,peak=0.00924,evidence=STOP,confirm=2/2,valid=200/200,fail
 
 ### Current conclusion
 
-Stage 7 is partially verified. Compilation, upload, deterministic state-machine self-test, real stationary `UNKNOWN -> STOP`, and continuous sampling all pass. A final real-sensor `STOP -> RUN -> STOP` movement sequence is still required before Stage 7 can be marked passed.
+Stage 7 was initially partially verified: compilation, upload, deterministic state-machine self-test, real stationary `UNKNOWN -> STOP`, and continuous sampling passed. A final real-sensor movement sequence was reserved for operator-assisted validation.
+
+### Final real-sensor transition validation
+
+Completed on 2026-08-10. Before movement, five consecutive stationary windows remained in `STOP` with RMS from 0.00437g to 0.00478g. During sustained movement, the classifier reached and held `RUN`; seven captured RUN windows had RMS from 0.38305g to 0.46532g. After the board was placed back on the table, six captured windows reached and held `STOP` with RMS from 0.00414g to 0.00461g.
+
+Every captured transition-validation window contained 200/200 samples, zero read failures, zero missed periods, and an actual window sample rate of 199.63 Hz. The deterministic boot self-test separately proves that each transition requires two consecutive supporting windows and that a single opposite-state window or a hysteresis-band window cannot switch state.
+
+### Final conclusion
+
+Stage 7 passes. The final firmware verifies its state logic at boot and has completed real-sensor `UNKNOWN -> STOP`, `STOP -> RUN`, and `RUN -> STOP` behavior while retaining valid 200 Hz acquisition. The thresholds remain bench-only and must be replaced or validated using Stage 8 mounted-machine data.
 
 ## Stages 8-13 preparation
 
