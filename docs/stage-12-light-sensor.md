@@ -46,4 +46,14 @@ Passed on GPIO34 at 3.3 V on 2026-08-10. Twenty-six readings were captured for e
 
 The module is inverse-reading: darker conditions produce a higher AO value. The flashlight drove the input to the low end of the ADC range. The calibrated millivolt helper has a non-zero estimate at raw zero, so classification and calibration use raw ADC readings as the primary signal.
 
-The first sensor passed the isolated electrical and response test. The second module and combined firmware remain untested.
+The first sensor passed the isolated electrical and response test.
+
+The second module then passed the same isolated GPIO34 test with 23 room-light samples and 26 samples for each other condition:
+
+| Condition | Raw ADC result | Millivolt estimate |
+|---|---:|---:|
+| Normal room light | 637-640, mean 639 | 662-664 mV, mean 663 mV |
+| Photoresistor fully covered | 3113-3156, mean 3127 | 2644-2673 mV, mean 2654 mV |
+| Phone flashlight at about 10 cm | 0 | 142 mV |
+
+Both modules have the same inverse response but different baseline and covered values. Each channel therefore requires independent calibration. Simultaneous two-channel wiring and firmware remain untested.

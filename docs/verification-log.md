@@ -453,7 +453,9 @@ GPIO binding and powered tests remain pending exact module inspection.
 
 The photographed module exposes labeled `AO`, `DO`, `GND`, and `VCC` pins. One module was powered from 3.3 V and its AO pin was connected to ADC1 GPIO34; DO remained disconnected. The isolated sketch compiled with ESP32 Core 3.3.10-cn, uploaded through COM6, and produced stable readings without resets or USB faults.
 
-Twenty-six samples per condition measured raw ADC values of 587-591 in room light, 3555-3607 when fully covered, and 0 under a phone flashlight at approximately 10 cm. This verifies the module's inverse response and clear separation across the tested range. The calibrated millivolt helper reported a non-zero floor at raw zero, so later light classification will use raw ADC values as its primary input. The first module passed; the second module and combined integration remain pending.
+Twenty-six samples per condition measured raw ADC values of 587-591 in room light, 3555-3607 when fully covered, and 0 under a phone flashlight at approximately 10 cm. This verifies the module's inverse response and clear separation across the tested range. The calibrated millivolt helper reported a non-zero floor at raw zero, so later light classification will use raw ADC values as its primary input. The first module passed.
+
+The second module then passed the same isolated GPIO34 test. It measured raw values of 637-640 in room light, 3113-3156 when fully covered, and 0 under the same approximate flashlight condition. Both modules share the same response direction but have measurably different baselines and covered values, confirming that production calibration must be per channel. Simultaneous two-channel integration remains pending.
 
 ### Stage 13 software analyzer
 
