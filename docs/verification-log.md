@@ -413,7 +413,11 @@ Stage 9 software is complete, but production thresholds remain blocked on superv
 
 A local read-only HTTP `/status` implementation was added. It reuses the Stage 7 classifier through optional hooks, while WiFi connection and HTTP clients run in a FreeRTOS task pinned to core 0. The response explicitly reports `threshold_source=bench_stage6` and `production_ready=false`.
 
-The firmware compiled and uploaded through `COM6`. With the saved 2.4 GHz hotspot unavailable, repeated reconnect attempts ran while more than 30 consecutive sensor windows remained 200/200 with zero failures and zero missed periods at 199.63 Hz. This verifies the disconnected/non-blocking path. Connected `/status` content and reconnect recovery remain pending until a 2.4 GHz network is available.
+The firmware compiled and uploaded through `COM6`. With the saved 2.4 GHz hotspot unavailable, repeated reconnect attempts ran while more than 30 consecutive sensor windows remained 200/200 with zero failures and zero missed periods at 199.63 Hz. This verifies the disconnected/non-blocking path.
+
+Connected validation then used a 2.4 GHz network. The board obtained `192.168.101.19`, and a real `/status` request returned `sensor_healthy=true`, current STOP state, zero failed samples, and zero missed periods. A 60-second stability run completed 60/60 HTTP requests; sequence advanced from 753 to 813, maximum data age was 1000 ms, failed and missed counters remained zero, and RSSI ranged from -73 to -66 dBm.
+
+A compile-time, default-disabled self-test forced one disconnect at 15.37 seconds. The HTTP service was announced again at 16.66 seconds, approximately 1.29 seconds later. Every observed window before, during, and after reconnect remained 200/200 with zero failures and zero missed periods at approximately 199.63 Hz. The default firmware with the self-test disabled was restored after this test.
 
 ### Stage 11 software core
 

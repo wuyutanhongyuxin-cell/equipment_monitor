@@ -22,7 +22,7 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 | 7 | Hysteretic RUN/STOP state classifier | Passed on hardware (2026-08-10) |
 | 8 | Mounted machine dataset | Waiting for supervised machine access |
 | 9 | Production threshold calibration | Software complete; waiting for Stage 8 data |
-| 10 | WiFi telemetry integration | Offline bench passed; connected HTTP pending |
+| 10 | WiFi telemetry integration | Passed on connected bench hardware (2026-08-10) |
 | 11 | Phone alerts | Core policy complete; waiting for provider/recipient |
 | 12 | Local interface and auxiliary sensors | Policy complete; waiting for module inspection |
 | 13 | Enclosure and soak validation | Analyzer complete; waiting for hardware soak |

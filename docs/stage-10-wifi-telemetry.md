@@ -10,6 +10,8 @@ The first implementation exposes a read-only local HTTP endpoint at `/status`. W
 
 Credentials load from ignored `secrets.h`. For local development, the existing ignored Stage 2 credentials can also be reused without copying their contents.
 
+`WIFI_RECONNECT_SELF_TEST_MS` is a compile-time diagnostic switch. It defaults to zero and therefore has no production behavior. Setting it to a positive millisecond value forces one WiFi disconnect after boot so reconnect handling can be verified without interrupting the access point.
+
 ## Pass criteria
 
 - Sampling remains 200/200 with zero missed periods during connection loss and reconnect.
@@ -25,4 +27,6 @@ Credentials load from ignored `secrets.h`. For local development, the existing i
 
 ## Current status
 
-Bench firmware implemented. Compile and connected-hardware validation are still required. Production release remains blocked on the Stage 9 production classifier and site network/security decisions.
+Connected bench validation passed on 2026-08-10. Sixty consecutive `/status` requests succeeded, snapshot sequence advanced, and sample failures and missed periods remained zero. A controlled disconnect recovered the HTTP service in approximately 1.29 seconds while every observed sensor window remained 200/200 at approximately 199.63 Hz with zero failures and zero missed periods.
+
+The board was restored to a build with the reconnect self-test disabled after validation. Production release remains blocked on the Stage 9 production classifier and site network/security decisions.

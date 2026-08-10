@@ -22,6 +22,10 @@ constexpr uint16_t HTTP_PORT = 80;
 constexpr uint32_t WIFI_RETRY_MS = 10000;
 constexpr uint32_t CLIENT_WAIT_MS = 50;
 
+#ifndef WIFI_RECONNECT_SELF_TEST_MS
+#define WIFI_RECONNECT_SELF_TEST_MS 0
+#endif
+
 struct TelemetrySnapshot {
   char state[8];
   float rmsG;
@@ -104,6 +108,7 @@ void handleClient(WiFiClient &client) {
 
 void telemetryTask(void *) {
   bool serverStarted = false;
+  bool reconnectSelfTestTriggered = false;
   uint32_t lastConnectAttemptMs = 0;
   WiFi.mode(WIFI_STA);
 
@@ -117,6 +122,14 @@ void telemetryTask(void *) {
         WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
       }
     } else {
+#if WIFI_RECONNECT_SELF_TEST_MS > 0
+      if (!reconnectSelfTestTriggered && nowMs >= WIFI_RECONNECT_SELF_TEST_MS) {
+        reconnectSelfTestTriggered = true;
+        Serial.println("Telemetry self-test: forcing WiFi disconnect");
+        WiFi.disconnect();
+        continue;
+      }
+#endif
       if (!serverStarted) {
         statusServer.begin();
         serverStarted = true;
