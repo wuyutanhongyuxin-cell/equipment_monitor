@@ -57,3 +57,20 @@ The second module then passed the same isolated GPIO34 test with 23 room-light s
 | Phone flashlight at about 10 cm | 0 | 142 mV |
 
 Both modules have the same inverse response but different baseline and covered values. Each channel therefore requires independent calibration. Simultaneous two-channel wiring and firmware remain untested.
+
+## Dual-channel test wiring
+
+After both isolated tests pass, power both modules from the same 3.3 V and ground rails. Connect S1 AO to ADC1 GPIO34 and S2 AO to ADC1 GPIO35; leave both DO pins disconnected. The dual test sketch discards the first conversion after changing channels, then averages 16 raw conversions per channel to reduce ADC switching and noise effects.
+
+## Dual-channel result
+
+Passed on connected hardware on 2026-08-11. Both modules shared the ESP32 3.3 V and ground rails while S1 AO used GPIO34 and S2 AO used GPIO35.
+
+| Condition | S1 raw ADC | S2 raw ADC |
+|---|---:|---:|
+| Both in room light | 527-532, mean 530 | 461-466, mean 463 |
+| S1 covered, S2 exposed | 2939-3272, mean 3141 | 675-757, mean 705 |
+| S1 exposed, S2 covered | 396-409, mean 404 | 3932-3953, mean 3942 |
+| Both covered | 3186-3525, mean 3430 | 4018-4095, mean 4083 |
+
+The exposed channel remained far below the covered channel in both one-at-a-time tests, and both channels reached high values together without reset or supply failure. Small exposed-channel changes are expected from hand shadows and ambient-light movement. No significant electrical channel coupling was observed.

@@ -36,4 +36,4 @@ Run the host regression suite with:
 
 ## Current status
 
-Hardware-independent output policy implemented. Both LM393 light sensor modules passed separate 3.3 V analog tests on ADC1 GPIO34 on 2026-08-10. Room-light, covered, and flashlight readings were clearly separated and repeatable; see [stage-12-light-sensor.md](stage-12-light-sensor.md). Their baselines differ, so each channel requires independent calibration. Simultaneous two-channel firmware, buzzer, and optional OLED remain untested.
+Hardware-independent output policy implemented. Both LM393 modules passed separate tests on 2026-08-10 and simultaneous 3.3 V ADC1 tests on GPIO34/GPIO35 on 2026-08-11; see [stage-12-light-sensor.md](stage-12-light-sensor.md). Independent cover tests and a both-covered test showed clear channel separation without reset or supply failure. Main-firmware integration, per-site RUN/ALARM lamp calibration, the buzzer, and optional OLED remain pending.

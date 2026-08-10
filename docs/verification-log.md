@@ -457,6 +457,8 @@ Twenty-six samples per condition measured raw ADC values of 587-591 in room ligh
 
 The second module then passed the same isolated GPIO34 test. It measured raw values of 637-640 in room light, 3113-3156 when fully covered, and 0 under the same approximate flashlight condition. Both modules share the same response direction but have measurably different baselines and covered values, confirming that production calibration must be per channel. Simultaneous two-channel integration remains pending.
 
+On 2026-08-11 both modules were powered together from 3.3 V, with S1 AO on ADC1 GPIO34 and S2 AO on ADC1 GPIO35. Room-light means were 530 and 463. Covering only S1 produced means of 3141 and 705; covering only S2 produced means of 404 and 3942. Covering both produced means of 3430 and 4083. Both channels therefore respond independently and can reach their dark ranges together without reset or supply instability. The dual-input bench test passed; main-firmware integration and per-site lamp calibration remain pending.
+
 ### Stage 13 software analyzer
 
 The soak analyzer checks minimum complete-window count, incomplete windows, failed samples, missed periods, state counts, and RMS range. Its production default requires 86,400 complete one-second windows.
