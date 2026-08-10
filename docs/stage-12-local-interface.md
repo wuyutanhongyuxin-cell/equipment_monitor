@@ -36,4 +36,4 @@ Run the host regression suite with:
 
 ## Current status
 
-Hardware-independent output policy implemented. Waiting for the user to provide and photograph the exact modules before GPIO binding or wiring. No speculative pinout or powered connection is authorized.
+Hardware-independent output policy implemented. One LM393 light sensor module was inspected and passed an isolated 3.3 V analog test on ADC1 GPIO34 on 2026-08-10. Room-light, covered, and flashlight readings were clearly separated and repeatable; see [stage-12-light-sensor.md](stage-12-light-sensor.md). The second sensor, combined firmware, buzzer, and optional OLED remain untested and unconnected.
