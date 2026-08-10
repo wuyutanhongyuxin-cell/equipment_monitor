@@ -23,7 +23,7 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 | 8 | Mounted machine dataset | Waiting for supervised machine access |
 | 9 | Production threshold calibration | Software complete; waiting for Stage 8 data |
 | 10 | WiFi telemetry integration | Passed on connected bench hardware (2026-08-10) |
-| 11 | Phone alerts | Core policy complete; waiting for provider/recipient |
+| 11 | Phone alerts | ServerChan gateway implemented; minimal WeChat receipt confirmed; clean debounce validation pending |
 | 12 | Local interface and auxiliary sensors | Policy complete; waiting for module inspection |
 | 13 | Enclosure and soak validation | Analyzer complete; waiting for hardware soak |
 

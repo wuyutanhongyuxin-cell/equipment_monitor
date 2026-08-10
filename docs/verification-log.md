@@ -429,6 +429,14 @@ Stage 11 alert policy tests: PASS
 
 Real phone delivery remains pending because no provider, recipient, credentials, or alert policy has been authorized.
 
+The ServerChan gateway was then implemented for a personal WeChat delivery path. Endpoint selection supports both `SCT` Turbo and `sctp` ServerChan 3 keys, credentials load from an ignored local file or process environment, and HTTP delivery uses the operating system HTTPS validation. Host endpoint, transition, deduplication, offline/recovery queue, and message-format tests pass. An eight-second dry-run consumed the live Stage 10 endpoint without sending an external message. Live receipt remains pending SendKey configuration.
+
+```text
+Stage 11 phone alert gateway tests: PASS
+```
+
+A ServerChan Turbo key was configured in the ignored local secrets file. The provider accepted a minimal delivery test with `code=0`, and the user confirmed receipt in personal WeChat. A live hand-motion run then delivered state transitions, but intermittent motion produced RUN/STOP/RUN notifications five seconds apart. The gateway was stopped immediately. A second alert-layer confirmation rule now requires a changed state to remain stable for 10 seconds before queueing, and short alarm labels are placed first in titles to survive WeChat preview truncation. Gateway primitive tests pass after the correction; a clean live debounce run remains required before final Stage 11 sign-off.
+
 ### Stage 12 software policy
 
 The hardware-independent local output policy maps UNKNOWN, STOP, RUN, sensor fault, offline fault, and mute to abstract LED/buzzer patterns. Faults override state; mute suppresses only sound and never hides visual fault status.

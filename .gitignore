@@ -8,6 +8,8 @@ build/
 # Local credentials (reserved for later stages)
 secrets.h
 **/secrets.h
+*.secrets.ps1
+.stage11-gateway*.log
 
 # Editor and OS files
 .vscode/

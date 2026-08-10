@@ -20,6 +20,24 @@ Run the host regression suite with:
 .\tests\test_alert_policy.ps1
 ```
 
+## ServerChan gateway
+
+`tools/run_phone_alert_gateway.ps1` polls the local Stage 10 `/status` endpoint and sends queued transitions through ServerChan over HTTPS. The first observation is silent. A changed device state must remain stable for 10 seconds before it is queued, repeated states are deduplicated, sensor faults, offline state, and recovery are represented as transitions, failed deliveries remain queued for retry, and a minimum send interval limits provider traffic. Notification titles put a short alarm category first so the important text remains visible when WeChat truncates its preview.
+
+Copy `tools/serverchan.secrets.example.ps1` to the ignored `tools/serverchan.secrets.ps1` and enter the SendKey locally. Turbo keys beginning with `SCT` use `sctapi.ftqq.com`. ServerChan 3 keys beginning with `sctp` derive the documented UID endpoint automatically.
+
+Run the gateway with:
+
+```powershell
+.\tools\run_phone_alert_gateway.ps1 -StatusUri 'http://192.168.101.19/status'
+```
+
+Run its host tests with:
+
+```powershell
+.\tests\test_phone_alert_gateway.ps1
+```
+
 ## Pass criteria
 
 - One confirmed event produces one notification with device identity, state, and timestamp.
@@ -29,4 +47,6 @@ Run the host regression suite with:
 
 ## Current status
 
-Provider-independent policy software implemented and host-testable. Real phone delivery remains blocked on Stage 10 production transport and user selection/configuration of a notification provider. No external account or message was created without authorization.
+Provider-independent policy and the ServerChan HTTPS gateway are implemented and host-tested. A dry-run successfully consumed the live Stage 10 endpoint. A ServerChan Turbo SendKey was configured only in the ignored local secrets file, a minimal live delivery returned `code=0`, and the user confirmed receipt in personal WeChat.
+
+A first live hand-motion run delivered real state notifications, but intermittent movement produced RUN/STOP/RUN messages within a few seconds. The gateway was stopped, and the gateway now requires a changed state to remain stable for 10 seconds before it is queued. Stage 11 is not final until a clean live debounce run proves that this correction suppresses short transition noise while still delivering real STOP/RUN events.
