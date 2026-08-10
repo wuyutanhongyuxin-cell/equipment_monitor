@@ -5,6 +5,8 @@ param(
     [int]$StateConfirmSeconds = 10,
     [int]$OfflineSeconds = 30,
     [int]$MinimumSendIntervalSeconds = 60,
+    [string]$StatusProxy = $env:HTTP_PROXY,
+    [string]$ProviderProxy = '',
     [switch]$DryRun
 )
 
@@ -26,14 +28,23 @@ $lastStatus = $null
 $confirmedState = $null
 $candidateState = $null
 $candidateSinceUtc = $null
+$lastPollWarningUtc = [datetime]::MinValue
 
 Write-Host "Stage 11 gateway started: $StatusUri"
 Write-Host "Delivery mode: $(if ($DryRun) { 'dry-run' } else { 'ServerChan' })"
+Write-Host "Status proxy: $(if ([string]::IsNullOrWhiteSpace($StatusProxy)) { 'disabled' } else { 'enabled' })"
 
 while ($true) {
     $now = [datetime]::UtcNow
     try {
-        $status = Invoke-RestMethod -Uri $StatusUri -TimeoutSec ([Math]::Max(1, $PollSeconds))
+        $statusRequest = @{
+            Uri = $StatusUri
+            TimeoutSec = [Math]::Max(1, $PollSeconds)
+        }
+        if (-not [string]::IsNullOrWhiteSpace($StatusProxy)) {
+            $statusRequest.Proxy = $StatusProxy
+        }
+        $status = Invoke-RestMethod @statusRequest
         $lastStatus = $status
         $lastSuccessUtc = $now
         $observedState = if (-not [bool]$status.sensor_healthy) { 'SENSOR_FAULT' } else { [string]$status.state }
@@ -41,19 +52,29 @@ while ($true) {
         if ($null -eq $confirmedState) {
             $confirmedState = $observedState
             $null = Add-AlertObservation -Tracker $tracker -State $observedState -ObservedUtc $now
+            Write-Host "Initial state: $confirmedState (silent baseline)"
         } elseif ($observedState -eq $confirmedState) {
+            if ($null -ne $candidateState) {
+                Write-Host "Candidate cancelled: $candidateState"
+            }
             $candidateState = $null
             $candidateSinceUtc = $null
         } elseif ($candidateState -ne $observedState) {
             $candidateState = $observedState
             $candidateSinceUtc = $now
+            Write-Host "Candidate state: $candidateState"
         } elseif (($now - $candidateSinceUtc).TotalSeconds -ge $StateConfirmSeconds) {
             $confirmedState = $observedState
             $candidateState = $null
             $candidateSinceUtc = $null
             $null = Add-AlertObservation -Tracker $tracker -State $observedState -ObservedUtc $now
+            Write-Host "Confirmed state: $confirmedState"
         }
     } catch {
+        if (($now - $lastPollWarningUtc).TotalSeconds -ge 30) {
+            Write-Warning "Status poll failed: $($_.Exception.Message)"
+            $lastPollWarningUtc = $now
+        }
         if (($now - $lastSuccessUtc).TotalSeconds -ge $OfflineSeconds) {
             if ($confirmedState -ne 'OFFLINE') {
                 $confirmedState = 'OFFLINE'
@@ -75,14 +96,24 @@ while ($true) {
                     Write-Host "DRY RUN: $($message.Title)"
                 } else {
                     $endpoint = Get-ServerChanEndpoint -SendKey $env:SERVERCHAN_SENDKEY
-                    $response = Invoke-RestMethod -Method Post -Uri $endpoint -Body @{
-                        title = $message.Title
-                        desp = $message.Description
-                    } -TimeoutSec 15
+                    $providerRequest = @{
+                        Method = 'Post'
+                        Uri = $endpoint
+                        Body = @{
+                            title = $message.Title
+                            desp = $message.Description
+                        }
+                        TimeoutSec = 15
+                    }
+                    if (-not [string]::IsNullOrWhiteSpace($ProviderProxy)) {
+                        $providerRequest.Proxy = $ProviderProxy
+                    }
+                    $response = Invoke-RestMethod @providerRequest
                     if ([int]$response.code -ne 0) { throw "ServerChan returned code $($response.code)" }
                 }
                 $null = $tracker.Queue.Dequeue()
                 $tracker.LastDeliveredUtc = $now
+                Write-Host "Delivered: $($message.Title)"
             } catch {
                 Write-Warning "Alert delivery failed; queued for retry: $($_.Exception.Message)"
             }

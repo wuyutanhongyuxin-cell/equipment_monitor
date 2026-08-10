@@ -435,7 +435,9 @@ The ServerChan gateway was then implemented for a personal WeChat delivery path.
 Stage 11 phone alert gateway tests: PASS
 ```
 
-A ServerChan Turbo key was configured in the ignored local secrets file. The provider accepted a minimal delivery test with `code=0`, and the user confirmed receipt in personal WeChat. A live hand-motion run then delivered state transitions, but intermittent motion produced RUN/STOP/RUN notifications five seconds apart. The gateway was stopped immediately. A second alert-layer confirmation rule now requires a changed state to remain stable for 10 seconds before queueing, and short alarm labels are placed first in titles to survive WeChat preview truncation. Gateway primitive tests pass after the correction; a clean live debounce run remains required before final Stage 11 sign-off.
+A ServerChan Turbo key was configured in the ignored local secrets file. The provider accepted a minimal delivery test with `code=0`, and the user confirmed receipt in personal WeChat. A first live hand-motion run then delivered noisy RUN/STOP/RUN transitions five seconds apart, so the gateway was stopped and a second alert-layer confirmation rule was added.
+
+Final connected validation completed on 2026-08-10. Windows required the local status request to use the configured HTTP proxy, while ServerChan HTTPS succeeded only through the direct Windows TLS path. The gateway now separates these routes and emits credential-free observation and delivery diagnostics. A short movement was suppressed without a notification. Sustained movement was observed as RUN and produced one confirmed `[RUNNING]` WeChat notification. After the sensor returned to a stable STOP, one `[STOPPED]` notification arrived after the configured 60-second minimum send interval. The user confirmed both messages, and the gateway was stopped after the test. Stage 11 passed.
 
 ### Stage 12 software policy
 

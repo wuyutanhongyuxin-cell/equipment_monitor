@@ -24,6 +24,8 @@ Run the host regression suite with:
 
 `tools/run_phone_alert_gateway.ps1` polls the local Stage 10 `/status` endpoint and sends queued transitions through ServerChan over HTTPS. The first observation is silent. A changed device state must remain stable for 10 seconds before it is queued, repeated states are deduplicated, sensor faults, offline state, and recovery are represented as transitions, failed deliveries remain queued for retry, and a minimum send interval limits provider traffic. Notification titles put a short alarm category first so the important text remains visible when WeChat truncates its preview.
 
+On Windows, `StatusProxy` defaults to `HTTP_PROXY` so the local status endpoint remains reachable in environments that route HTTP through a local proxy. `ProviderProxy` defaults to empty because ServerChan HTTPS is validated and sent directly; set it explicitly only when the installed HTTPS proxy is known to support the Windows TLS stack. Startup, candidate, confirmation, polling failure, and successful-delivery messages are logged without credentials.
+
 Copy `tools/serverchan.secrets.example.ps1` to the ignored `tools/serverchan.secrets.ps1` and enter the SendKey locally. Turbo keys beginning with `SCT` use `sctapi.ftqq.com`. ServerChan 3 keys beginning with `sctp` derive the documented UID endpoint automatically.
 
 Run the gateway with:
@@ -47,6 +49,4 @@ Run its host tests with:
 
 ## Current status
 
-Provider-independent policy and the ServerChan HTTPS gateway are implemented and host-tested. A dry-run successfully consumed the live Stage 10 endpoint. A ServerChan Turbo SendKey was configured only in the ignored local secrets file, a minimal live delivery returned `code=0`, and the user confirmed receipt in personal WeChat.
-
-A first live hand-motion run delivered real state notifications, but intermittent movement produced RUN/STOP/RUN messages within a few seconds. The gateway was stopped, and the gateway now requires a changed state to remain stable for 10 seconds before it is queued. Stage 11 is not final until a clean live debounce run proves that this correction suppresses short transition noise while still delivering real STOP/RUN events.
+Passed on connected hardware on 2026-08-10. The ignored local ServerChan Turbo SendKey returned `code=0`, and the user confirmed the independent connectivity notification in personal WeChat. A short movement did not produce a notification. Sustained movement produced one `[RUNNING]` notification after confirmation, and the subsequent stable STOP produced one `[STOPPED]` notification after the configured 60-second minimum send interval. The gateway was stopped after validation to avoid test notifications from later bench handling.
