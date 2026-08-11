@@ -459,6 +459,10 @@ The second module then passed the same isolated GPIO34 test. It measured raw val
 
 On 2026-08-11 both modules were powered together from 3.3 V, with S1 AO on ADC1 GPIO34 and S2 AO on ADC1 GPIO35. Room-light means were 530 and 463. Covering only S1 produced means of 3141 and 705; covering only S2 produced means of 404 and 3942. Covering both produced means of 3430 and 4083. Both channels therefore respond independently and can reach their dark ranges together without reset or supply instability. The dual-input bench test passed; main-firmware integration and per-site lamp calibration remain pending.
 
+The MPU6050 and both LM393 modules were then connected together. The integrated firmware retained 200/200 MPU samples at approximately 199.63 Hz with zero I2C failures and zero missed periods while sampling both ADC1 channels once per one-second vibration window. The factory `DAVOSEMI` SSID was confirmed as 2.4 GHz and stored only in the ignored secrets file alongside the earlier development credentials. The network task connected on its first attempt and received `192.168.6.116` for this DHCP session.
+
+The integrated `/status` endpoint returned both light channels together with vibration and health telemetry. A 60-second run completed 60/60 requests; sequence advanced from 585 to 653, maximum sample failures and missed periods remained zero, maximum snapshot age was 1002 ms, S1 ranged from 491 to 848, S2 ranged from 578 to 1335, and RSSI ranged from -55 to -48 dBm. Bench integration passed. Site lamp mounting, optical isolation, per-channel calibration, and fusion rules remain pending.
+
 ### Stage 13 software analyzer
 
 The soak analyzer checks minimum complete-window count, incomplete windows, failed samples, missed periods, state counts, and RMS range. Its production default requires 86,400 complete one-second windows.

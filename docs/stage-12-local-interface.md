@@ -36,4 +36,4 @@ Run the host regression suite with:
 
 ## Current status
 
-Hardware-independent output policy implemented. Both LM393 modules passed separate tests on 2026-08-10 and simultaneous 3.3 V ADC1 tests on GPIO34/GPIO35 on 2026-08-11; see [stage-12-light-sensor.md](stage-12-light-sensor.md). Independent cover tests and a both-covered test showed clear channel separation without reset or supply failure. Main-firmware integration, per-site RUN/ALARM lamp calibration, the buzzer, and optional OLED remain pending.
+Hardware-independent output policy implemented. Both LM393 modules passed separate and simultaneous 3.3 V tests, then passed integration with MPU6050 sampling and WiFi telemetry on 2026-08-11; see [stage-12-light-sensor.md](stage-12-light-sensor.md) and [stage-12-integrated-monitor.md](stage-12-integrated-monitor.md). Per-site RUN/ALARM lamp mounting and calibration remain pending. The buzzer and optional OLED remain optional and untested.

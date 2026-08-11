@@ -74,3 +74,5 @@ Passed on connected hardware on 2026-08-11. Both modules shared the ESP32 3.3 V 
 | Both covered | 3186-3525, mean 3430 | 4018-4095, mean 4083 |
 
 The exposed channel remained far below the covered channel in both one-at-a-time tests, and both channels reached high values together without reset or supply failure. Small exposed-channel changes are expected from hand shadows and ambient-light movement. No significant electrical channel coupling was observed.
+
+The two channels subsequently passed integration with the MPU6050 classifier and WiFi telemetry. See [stage-12-integrated-monitor.md](stage-12-integrated-monitor.md). Bench response testing is complete; production lamp thresholds must be calibrated after the sensors are optically mounted over the actual RUN and ALARM lamps.
