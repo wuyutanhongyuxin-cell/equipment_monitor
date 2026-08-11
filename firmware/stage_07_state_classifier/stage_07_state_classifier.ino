@@ -1,5 +1,9 @@
 #include <Wire.h>
 
+#ifndef MONITOR_EARLY_SETUP
+#define MONITOR_EARLY_SETUP() do {} while (0)
+#endif
+
 #ifndef MONITOR_EXTRA_SETUP
 #define MONITOR_EXTRA_SETUP() do {} while (0)
 #endif
@@ -239,6 +243,7 @@ void setup() {
   delay(1000);
   pinMode(STATUS_LED_PIN, OUTPUT);
   digitalWrite(STATUS_LED_PIN, LOW);
+  MONITOR_EARLY_SETUP();
   Serial.println("ESP32 state classifier boot OK");
   Wire.begin(SDA_PIN, SCL_PIN, I2C_FREQUENCY_HZ);
   Wire.setTimeOut(50);

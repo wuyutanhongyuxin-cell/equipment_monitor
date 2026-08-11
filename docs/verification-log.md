@@ -463,6 +463,8 @@ The MPU6050 and both LM393 modules were then connected together. The integrated 
 
 The integrated `/status` endpoint returned both light channels together with vibration and health telemetry. A 60-second run completed 60/60 requests; sequence advanced from 585 to 653, maximum sample failures and missed periods remained zero, maximum snapshot age was 1002 ms, S1 ranged from 491 to 848, S2 ranged from 578 to 1335, and RSSI ranged from -55 to -48 dBm. Bench integration passed. Site lamp mounting, optical isolation, per-channel calibration, and fusion rules remain pending.
 
+The photographed 3.3 V active-high buzzer was then connected with I/O on GPIO25. A bounded isolated sketch produced exactly three 200 ms beeps separated by two-second silent intervals, and the user confirmed all three beeps and silence afterward. The integrated monitor now uses an early setup hook to force GPIO25 low before MPU6050 calibration. Automatic buzzer alarm behavior remains disabled pending site policy and a physical mute design.
+
 ### Stage 13 software analyzer
 
 The soak analyzer checks minimum complete-window count, incomplete windows, failed samples, missed periods, state counts, and RMS range. Its production default requires 86,400 complete one-second windows.

@@ -36,4 +36,4 @@ Run the host regression suite with:
 
 ## Current status
 
-Hardware-independent output policy implemented. Both LM393 modules passed separate and simultaneous 3.3 V tests, then passed integration with MPU6050 sampling and WiFi telemetry on 2026-08-11; see [stage-12-light-sensor.md](stage-12-light-sensor.md) and [stage-12-integrated-monitor.md](stage-12-integrated-monitor.md). Per-site RUN/ALARM lamp mounting and calibration remain pending. The buzzer and optional OLED remain optional and untested.
+Hardware-independent output policy implemented. Both LM393 modules passed separate, simultaneous, and integrated tests with MPU6050 and WiFi telemetry. The active-high buzzer passed a bounded GPIO25 hardware test and is forced off during early integrated startup; see [stage-12-buzzer.md](stage-12-buzzer.md). Per-site RUN/ALARM lamp calibration and the final alarm/mute behavior remain pending. The OLED remains optional and untested.

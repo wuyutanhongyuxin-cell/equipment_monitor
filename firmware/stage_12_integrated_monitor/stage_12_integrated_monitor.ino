@@ -9,9 +9,11 @@
 #endif
 
 void integratedSetup();
+void integratedEarlySetup();
 void integratedStateUpdated(const char *stateValue, float rmsValue, float peakValue,
                             uint32_t failedValue, uint32_t missedValue);
 
+#define MONITOR_EARLY_SETUP() integratedEarlySetup()
 #define MONITOR_EXTRA_SETUP() integratedSetup()
 #define MONITOR_STATE_UPDATED(stateValue, rmsValue, peakValue, failedValue, missedValue) \
   integratedStateUpdated(stateValue, rmsValue, peakValue, failedValue, missedValue)
@@ -21,6 +23,7 @@ void integratedStateUpdated(const char *stateValue, float rmsValue, float peakVa
 namespace {
 constexpr uint8_t LIGHT_1_PIN = 34;
 constexpr uint8_t LIGHT_2_PIN = 35;
+constexpr uint8_t BUZZER_PIN = 25;
 constexpr uint8_t LIGHT_SAMPLES = 16;
 constexpr uint16_t HTTP_PORT = 80;
 constexpr uint32_t WIFI_RETRY_MS = 10000;
@@ -186,6 +189,11 @@ void integratedStateUpdated(const char *stateValue, float rmsValue, float peakVa
                 static_cast<unsigned long>(networkLoopCount),
                 static_cast<unsigned long>(networkAttemptCount),
                 networkStatusCode);
+}
+
+void integratedEarlySetup() {
+  pinMode(BUZZER_PIN, OUTPUT);
+  digitalWrite(BUZZER_PIN, LOW);
 }
 
 void integratedSetup() {

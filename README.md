@@ -24,7 +24,7 @@ Low-voltage, external monitor for industrial equipment. The planned MVP uses an 
 | 9 | Production threshold calibration | Software complete; waiting for Stage 8 data |
 | 10 | WiFi telemetry integration | Passed on connected bench hardware (2026-08-10) |
 | 11 | Phone alerts | Passed with ServerChan/WeChat on hardware (2026-08-10) |
-| 12 | Local interface and auxiliary sensors | MPU + dual LM393 + WiFi bench integration passed; site lamp calibration pending |
+| 12 | Local interface and auxiliary sensors | MPU + dual LM393 + WiFi integrated; active buzzer passed and defaults off; site calibration pending |
 | 13 | Enclosure and soak validation | Analyzer complete; waiting for hardware soak |
 
 Progress only advances after the current stage is verified on the real hardware.
